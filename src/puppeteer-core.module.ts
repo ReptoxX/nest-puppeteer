@@ -8,8 +8,11 @@ import {
   OnModuleDestroy,
 } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import type { LaunchOptions, Browser, BrowserContext } from 'puppeteer';
-import { launch } from 'puppeteer';
+import type {
+  Browser,
+  BrowserContext,
+} from 'puppeteer';
+import * as Puppeteer from 'puppeteer';
 import {
   PUPPETEER_INSTANCE_NAME,
   DEFAULT_PUPPETEER_INSTANCE_NAME,
@@ -40,10 +43,7 @@ export class PuppeteerCoreModule
   }
 
   static forRoot(
-    launchOptions: LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions & {
-        product?: Product;
-        extraPrefsFirefox?: Record<string, unknown>;
-    } = DEFAULT_CHROME_LAUNCH_OPTIONS,
+    launchOptions: PuppeteerModuleOptions['launchOptions'] = DEFAULT_CHROME_LAUNCH_OPTIONS,
     instanceName: string = DEFAULT_PUPPETEER_INSTANCE_NAME,
   ): DynamicModule {
     const instanceNameProvider = {
@@ -54,7 +54,7 @@ export class PuppeteerCoreModule
     const browserProvider = {
       provide: getBrowserToken(instanceName),
       async useFactory() {
-        return await launch(launchOptions);
+        return await Puppeteer.launch(launchOptions);
       },
     };
 
@@ -98,7 +98,7 @@ export class PuppeteerCoreModule
     const browserProvider = {
       provide: getBrowserToken(puppeteerInstanceName),
       async useFactory(puppeteerModuleOptions: PuppeteerModuleOptions) {
-        return await launch(
+        return await Puppeteer.launch(
           puppeteerModuleOptions.launchOptions ?? DEFAULT_CHROME_LAUNCH_OPTIONS,
         );
       },

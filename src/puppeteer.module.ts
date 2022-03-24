@@ -18,7 +18,7 @@ export class PuppeteerModule {
    * will be used.
    */
   static forRoot(
-    options?: PuppeteerModuleOptions['launchOptions'] & { isGlobal?: boolean },
+    options?: PuppeteerModuleOptions['launchOptions']  & { isGlobal?: boolean },
     instanceName?: string,
   ): DynamicModule {
     return {
